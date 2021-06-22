@@ -36,5 +36,5 @@ func main() {
 		Addr: os.Getenv("URL"),
 	}
 	fmt.Println("Server run with localhost:8000/")
-	server.ListenAndServe()
+	log.Fatal(server.ListenAndServe())
 }
