@@ -27,6 +27,7 @@ func signup(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, nil)
 }
 
+// フォーム解析、URLクエリ解析後、サインアップとログインに関数振り分け
 func handleLogin(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
@@ -35,7 +36,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 
 	query := r.FormValue("hook")
 	if query == "signup" {
-		createUser()
+		createUser(w)
 	} else if query == "login" {
 		fmt.Fprintln(w, "ログイン")
 	} else {
@@ -43,6 +44,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// ユーザーの作成
 func createUser() {
 
 }
@@ -54,7 +56,7 @@ func main() {
 	}
 	// ここでpublic傘下の静的ファイルを呼び出している。これがないとCSSが適応されない
 	http.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir("public"))))
-	// マルチプレクサにハンドラをルートのリクエストに対してindexのt呼び出し登録
+	// マルチプレクサから各リクエストに対して関数の呼び出し登録
 	http.HandleFunc("/", index)
 	http.HandleFunc("/signup/", signup)
 	http.HandleFunc("/usercreate", handleLogin)
