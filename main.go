@@ -36,7 +36,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 
 	query := r.FormValue("hook")
 	if query == "signup" {
-		createUser(w)
+		createUser()
 	} else if query == "login" {
 		fmt.Fprintln(w, "ログイン")
 	} else {
