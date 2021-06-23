@@ -27,8 +27,24 @@ func signup(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, nil)
 }
 
-func userCreate(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "OK")
+func handleLogin(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		fmt.Fprintf(w, "Formを解析できませんでした")
+	}
+
+	query := r.FormValue("hook")
+	if query == "signup" {
+		createUser()
+	} else if query == "login" {
+		fmt.Fprintln(w, "ログイン")
+	} else {
+		log.Fatalf("入力が間違っています。%vは不正な値です。", query)
+	}
+}
+
+func createUser() {
+
 }
 
 func main() {
@@ -41,7 +57,7 @@ func main() {
 	// マルチプレクサにハンドラをルートのリクエストに対してindexのt呼び出し登録
 	http.HandleFunc("/", index)
 	http.HandleFunc("/signup/", signup)
-	http.HandleFunc("/usercreate/", userCreate)
+	http.HandleFunc("/usercreate", handleLogin)
 
 	server := http.Server{
 		Addr: os.Getenv("URL"),
