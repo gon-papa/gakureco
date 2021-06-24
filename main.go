@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"gakureco/data"
 	"html/template"
 	"log"
 	"net/http"
@@ -54,6 +55,12 @@ func main() {
 	if err != nil {
 		log.Fatal("Error Loding .env file!")
 	}
+
+	_, err = data.DatabaseConection()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("DB接続完了")
 	// ここでpublic傘下の静的ファイルを呼び出している。これがないとCSSが適応されない
 	http.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir("public"))))
 	// マルチプレクサから各リクエストに対して関数の呼び出し登録
