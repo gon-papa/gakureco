@@ -12,6 +12,8 @@ import (
 	_ "github.com/joho/godotenv"
 )
 
+var user data.User
+
 func index(w http.ResponseWriter, r *http.Request) {
 	// ファイル解析
 	t, err := template.ParseFiles("templates/index.html", "templates/layout.html")
@@ -36,8 +38,9 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	query := r.FormValue("hook")
+
 	if query == "signup" {
-		createUser()
+		user.CreateUser(r)
 	} else if query == "login" {
 		fmt.Fprintln(w, "ログイン")
 	} else {
@@ -45,24 +48,19 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// ユーザーの作成
-func createUser() {
-
-}
-
 func main() {
+	// 環境変数読み込み
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error Loding .env file!")
 	}
 
-	_, err = data.DatabaseConection()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("DB接続完了")
+	// データベース接続
+	data.DatabaseConection()
+
 	// ここでpublic傘下の静的ファイルを呼び出している。これがないとCSSが適応されない
 	http.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir("public"))))
+
 	// マルチプレクサから各リクエストに対して関数の呼び出し登録
 	http.HandleFunc("/", index)
 	http.HandleFunc("/signup/", signup)

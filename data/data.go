@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -10,16 +11,18 @@ import (
 	"gorm.io/gorm"
 )
 
-func DatabaseConection() (*gorm.DB, error) {
+var Db *gorm.DB
+
+func DatabaseConection() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error Loding .env file!")
 	}
 
 	dsn := os.Getenv("DB_CONNECT")
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	Db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
-	return db, err
+	fmt.Println("DB接続完了")
 }

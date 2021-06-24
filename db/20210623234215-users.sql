@@ -1,12 +1,13 @@
 
 -- +migrate Up
 CREATE TABLE IF NOT EXISTS users (
-  id int NOT NULL UNIQUE PRIMARY KEY,
-  name varchar NOT NULL,
-	email varchar NOT NULL UNIQUE,
+  id serial NOT NULL NOT NULL UNIQUE PRIMARY KEY,
+  name varchar(255) NOT NULL,
+	email varchar(255) NOT NULL UNIQUE,
 	password  varchar NOT NULL,
-  created_at timestamp,
-  updated_at timestamp
+  created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp,
+  deleted_at timestamp
 );
 
 -- +migrate Down
