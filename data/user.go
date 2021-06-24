@@ -1,7 +1,7 @@
 package data
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 
 	"gopkg.in/go-playground/validator.v9"
@@ -10,10 +10,10 @@ import (
 )
 
 type User struct {
-	gorm.Model
-	Name     string `validate:"required"`
-	Email    string `validate:"required,email"`
-	Password string `validate:"required,alphanum"`
+	gorm.Model `validate:"-"`
+	Name       string `validate:"required"`
+	Email      string `validate:"required,email"`
+	Password   string `validate:"required,alphanum"`
 }
 
 func (u *User) CreateUser(r *http.Request) {
@@ -22,14 +22,15 @@ func (u *User) CreateUser(r *http.Request) {
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
 	}
+
 	validate_err := validator.New().Struct(user)
 	if validate_err != nil {
 		//後にvalidetioncheck関数からtemplateに返す
-		log.Fatal(validate_err, "validationにひっかかりました")
+		fmt.Println(validate_err, "validationにひっかかりました")
+		return
 	}
-
-	err := Db.Create(&user)
-	if err != nil {
-		log.Fatal(err, "保存されませんでした")
+	if err := Db.Create(&user).Error; err != nil {
+		fmt.Println(err)
+		return
 	}
 }
