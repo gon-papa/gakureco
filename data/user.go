@@ -13,16 +13,17 @@ type User struct {
 	gorm.Model `validate:"-"`
 	Name       string `validate:"required"`
 	Email      string `validate:"required,email,emailunique"`
-	Password   string `validate:"required,alphanum"`
+	Password   string `validate:"required,alphanum,min=4,max=12"`
 }
 
 // バリデーションチェック
 func (u *User) ValidationCheck() (result map[string]string, err error) {
 	result = make(map[string]string)
 	validate := validator.New()
+
 	validate.RegisterValidation("emailunique", u.EmailUnique)
-	// err = validator.New().Struct(u)
 	err = validate.Struct(u)
+
 	if err != nil {
 		errors := err.(validator.ValidationErrors)
 		if len(errors) != 0 {
@@ -30,7 +31,6 @@ func (u *User) ValidationCheck() (result map[string]string, err error) {
 				switch errors[i].StructField() {
 				case "Name":
 					result["Name"] = "名前を入力してください"
-					// fmt.Println(result["Name"])
 				case "Email":
 					switch errors[i].Tag() {
 					case "required":
@@ -38,11 +38,8 @@ func (u *User) ValidationCheck() (result map[string]string, err error) {
 					case "emailunique":
 						result["uEmail"] = "メールアドレスが重複しています"
 					}
-					// result["Email"] = "正しいメールアドレスの形式で入力してください"
-					// fmt.Println(result["Email"])
 				case "Password":
-					result["Password"] = "パスワードを入力してください"
-					// fmt.Println(result["Password"])
+					result["Password"] = "パスワードを入力してください(4文字以上、12文字以内)"
 				}
 			}
 		}
@@ -54,7 +51,6 @@ func (u *User) ValidationCheck() (result map[string]string, err error) {
 // カスタムバリデーション
 func (u *User) EmailUnique(fl validator.FieldLevel) bool {
 	err := Db.Where("email = ?", u.Email).Find(u)
-	fmt.Println(err, "カスタムバリデーション")
 	return err == nil
 }
 
