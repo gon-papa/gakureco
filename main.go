@@ -40,12 +40,24 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	query := r.FormValue("hook")
 
 	if query == "signup" {
-		user.CreateUser(r)
+		result, _ := user.CreateUser(r)
+		signupRedirect(w, r, result)
 	} else if query == "login" {
 		fmt.Fprintln(w, "ログイン")
 	} else {
 		log.Fatalf("入力が間違っています。%vは不正な値です。", query)
 	}
+}
+
+func signupRedirect(w http.ResponseWriter, r *http.Request, result map[string]string) {
+	if len(result) != 0 {
+		t := template.Must(template.ParseFiles("templates/signup.html", "templates/layout.html"))
+		t.Execute(w, result)
+		fmt.Println("Redirect")
+		return
+	}
+	// 後にダッシュボードに遷移
+	fmt.Fprintln(w, "OK")
 }
 
 func main() {

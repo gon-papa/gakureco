@@ -4,15 +4,22 @@
   <div class="row mt-5">
     <form action="/usercreate?hook=signup" method="post" enctype="application/x-www-form-urlencoded">
       <div class="mb-3">
-        <label for="name" class="form-label">User name</label>
+        <label for="name" class="form-label">
+          User name <span>{{.Name}}</span>
+        </label>
         <input type="text" class="form-control" id="name" name="name">
       </div>
       <div class="mb-3">
-        <label for="email" class="form-label">Email address</label>
+        <label for="email" class="form-label">
+          Email address <span>{{.Email}}</span>
+          {{.uEmail}}
+        </label>
         <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
       </div>
       <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
+        <label for="password" class="form-label">
+          Password <span>{{.Password}}</span>
+        </label>
         <input type="password" class="form-control" id="password" name="password">
       </div>
       <input type="submit" class="btn btn-primary" value="Signup">
