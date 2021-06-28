@@ -30,6 +30,11 @@ func signup(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, nil)
 }
 
+func login(w http.ResponseWriter, r *http.Request) {
+	t := template.Must(template.ParseFiles("templates/login.html", "templates/layout.html"))
+	t.Execute(w, nil)
+}
+
 // フォーム解析、URLクエリ解析後、サインアップとログインに関数振り分け
 func handleLogin(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
@@ -43,7 +48,8 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		result, _ := user.CreateUser(r)
 		signupRedirect(w, r, result)
 	} else if query == "login" {
-		fmt.Fprintln(w, "ログイン")
+		user, err = data.Authenticate(r)
+		loginRedirect(w, r, user, err)
 	} else {
 		log.Fatalf("入力が間違っています。%vは不正な値です。", query)
 	}
@@ -58,6 +64,17 @@ func signupRedirect(w http.ResponseWriter, r *http.Request, result map[string]st
 	}
 	// 後にダッシュボードに遷移
 	fmt.Fprintln(w, "OK")
+}
+
+func loginRedirect(w http.ResponseWriter, r *http.Request, user data.User, err error) {
+	if err != nil {
+		t := template.Must(template.ParseFiles("templates/login.html", "templates/layout.html"))
+		t.Execute(w, err)
+		fmt.Println("Redirect")
+		return
+	}
+	fmt.Printf("%#v", user)
+	fmt.Fprintln(w, user)
 }
 
 func main() {
@@ -76,7 +93,9 @@ func main() {
 	// マルチプレクサから各リクエストに対して関数の呼び出し登録
 	http.HandleFunc("/", index)
 	http.HandleFunc("/signup/", signup)
+	http.HandleFunc("/login/", login)
 	http.HandleFunc("/usercreate", handleLogin)
+	http.HandleFunc("/authenticate", handleLogin)
 
 	server := http.Server{
 		Addr: os.Getenv("URL"),
