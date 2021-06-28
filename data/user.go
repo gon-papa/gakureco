@@ -70,6 +70,7 @@ func (u *User) CreateUser(r *http.Request) (map[string]string, error) {
 		return result, err
 	}
 
+	user.Password = Encrypt(user.Password)
 	if err := Db.Create(&user).Error; err != nil {
 		fmt.Println(err)
 		return result, err

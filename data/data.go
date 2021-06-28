@@ -1,7 +1,9 @@
 package data
 
 import (
+	"crypto/sha256"
 	"fmt"
+	"io"
 	"log"
 	"os"
 
@@ -25,4 +27,11 @@ func DatabaseConection() {
 		log.Fatal(err)
 	}
 	fmt.Println("DB接続完了")
+}
+
+func Encrypt(plaintext string) (crypttext string) {
+	cryptext := sha256.New()
+	io.WriteString(cryptext, plaintext)
+	crypttext = fmt.Sprintf("%x", cryptext.Sum(nil))
+	return
 }
