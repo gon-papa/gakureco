@@ -51,7 +51,7 @@ func (u *User) ValidationCheck() (result map[string]string, err error) {
 // カスタムバリデーション
 func (u *User) EmailUnique(fl validator.FieldLevel) bool {
 	err := Db.Where("email = ?", u.Email).Find(u)
-	return err == nil
+	return err.RowsAffected == 0
 }
 
 // ユーザー作成~DB保存
