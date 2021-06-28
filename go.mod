@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/go-playground/universal-translator v0.17.0 // indirect
+	github.com/google/uuid v1.1.2 // indirect
 	github.com/jackc/pgproto3/v2 v2.1.0 // indirect
 	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect

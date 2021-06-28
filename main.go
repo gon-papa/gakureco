@@ -48,7 +48,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		result, _ := user.CreateUser(r)
 		signupRedirect(w, r, result)
 	} else if query == "login" {
-		user, err = data.Authenticate(r)
+		user, err = data.Authenticate(w, r)
 		loginRedirect(w, r, user, err)
 	} else {
 		log.Fatalf("入力が間違っています。%vは不正な値です。", query)
@@ -73,8 +73,6 @@ func loginRedirect(w http.ResponseWriter, r *http.Request, user data.User, err e
 		fmt.Println("Redirect")
 		return
 	}
-	fmt.Printf("%#v", user)
-	fmt.Fprintln(w, user)
 }
 
 func main() {
