@@ -19,7 +19,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	t, err := template.ParseFiles("templates/index.html", "templates/layout.html")
 	// エラー処理もまとめてやってくれる関数もあるが今回は初めてなので使わない(template.Must)
 	if err != nil {
-		log.Fatal("index.htmlが読み込めません")
+		log.Println("index.htmlが読み込めません")
 	}
 	// http.ResponseWriterに解析後の結果を返してレスポンスを生成
 	t.Execute(w, nil)

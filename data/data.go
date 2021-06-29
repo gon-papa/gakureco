@@ -29,6 +29,7 @@ func DatabaseConection() {
 	fmt.Println("DB接続完了")
 }
 
+// ストレッチングしていない
 func Encrypt(plaintext string) (crypttext string) {
 	cryptext := sha256.New()
 	io.WriteString(cryptext, plaintext)
